@@ -2,214 +2,1171 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <meta
+        name="viewport"
+        content="width=device-width, initial-scale=1.0"
+    >
+
     <title>Expense Claims</title>
 
     <style>
-        body {
-            font-family: Arial, sans-serif;
-            max-width: 650px;
-            margin: 40px auto;
-            padding: 20px;
-            background: #f5f5f5;
-        }
-
-        .card {
-            background: white;
-            padding: 25px;
-            border-radius: 12px;
-            box-shadow: 0 2px 10px #ddd;
-        }
-
-        h1 {
-            margin-top: 0;
-        }
-
-        label {
-            display: block;
-            margin-top: 15px;
-            font-weight: bold;
-        }
-
-        input, textarea, select, button {
-            width: 100%;
+        * {
             box-sizing: border-box;
-            padding: 10px;
+        }
+
+        body {
+            margin: 0;
+            font-family: Arial, sans-serif;
+            background: #f4f6f8;
+            color: #111;
+        }
+
+        header {
+            background: #111827;
+            color: white;
+            padding: 18px 24px;
+        }
+
+        header h1 {
+            margin: 0 0 6px;
+            font-size: 26px;
+        }
+
+        header p {
+            margin: 0;
+            color: #d1d5db;
+        }
+
+        .container {
+            max-width: 1100px;
+            margin: 25px auto;
+            padding: 0 16px;
+        }
+
+        .role-bar {
+            background: white;
+            padding: 16px;
+            border-radius: 10px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .role-bar label {
+            font-weight: bold;
+            margin-right: 10px;
+        }
+
+        select,
+        input,
+        textarea,
+        button {
+            font: inherit;
+        }
+
+        select,
+        input,
+        textarea {
+            width: 100%;
+            padding: 11px;
+            border: 1px solid #cbd5e1;
+            border-radius: 7px;
             margin-top: 6px;
-            border: 1px solid #ccc;
-            border-radius: 6px;
+        }
+
+        textarea {
+            min-height: 90px;
+            resize: vertical;
         }
 
         button {
-            margin-top: 20px;
+            border: 0;
+            border-radius: 7px;
+            padding: 11px 16px;
             cursor: pointer;
             font-weight: bold;
         }
 
-        #result {
-            margin-top: 20px;
-            white-space: pre-wrap;
+        .primary {
+            background: #2563eb;
+            color: white;
         }
 
-        #preview {
-            max-width: 100%;
-            max-height: 250px;
-            margin-top: 15px;
+        .success {
+            background: #16a34a;
+            color: white;
+        }
+
+        .danger {
+            background: #dc2626;
+            color: white;
+        }
+
+        .secondary {
+            background: #475569;
+            color: white;
+        }
+
+        button:hover {
+            opacity: 0.9;
+        }
+
+        .card {
+            background: white;
+            border-radius: 10px;
+            padding: 20px;
+            margin-bottom: 20px;
+            box-shadow: 0 2px 10px rgba(0,0,0,0.08);
+        }
+
+        .card h2 {
+            margin-top: 0;
+        }
+
+        .grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 16px;
+        }
+
+        .field {
+            margin-bottom: 14px;
+        }
+
+        .full {
+            grid-column: 1 / -1;
+        }
+
+        .claim {
+            border: 1px solid #dbe2ea;
+            border-radius: 9px;
+            padding: 16px;
+            margin-bottom: 12px;
+        }
+
+        .claim-header {
+            display: flex;
+            justify-content: space-between;
+            gap: 10px;
+            align-items: center;
+            margin-bottom: 10px;
+        }
+
+        .claim-header h3 {
+            margin: 0;
+        }
+
+        .status {
+            padding: 5px 9px;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: bold;
+            background: #e5e7eb;
+        }
+
+        .status.submitted {
+            background: #fef3c7;
+        }
+
+        .status.approved {
+            background: #dcfce7;
+        }
+
+        .status.rejected {
+            background: #fee2e2;
+        }
+
+        .status.paid {
+            background: #dbeafe;
+        }
+
+        .details {
+            line-height: 1.7;
+        }
+
+        .actions {
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+            margin-top: 12px;
+        }
+
+        .message {
+            padding: 12px;
+            border-radius: 7px;
+            margin-top: 12px;
             display: none;
+        }
+
+        .message.success-message {
+            display: block;
+            background: #dcfce7;
+            color: #166534;
+        }
+
+        .message.error-message {
+            display: block;
+            background: #fee2e2;
+            color: #991b1b;
+        }
+
+        .receipt-preview {
+            max-width: 250px;
+            max-height: 250px;
+            margin-top: 10px;
             border-radius: 8px;
+            border: 1px solid #ddd;
+        }
+
+        .hidden {
+            display: none;
+        }
+
+        .empty {
+            color: #64748b;
+            padding: 15px 0;
+        }
+
+        .small {
+            font-size: 13px;
+            color: #64748b;
+        }
+
+        @media (max-width: 700px) {
+            .grid {
+                grid-template-columns: 1fr;
+            }
+
+            .full {
+                grid-column: auto;
+            }
+
+            .claim-header {
+                flex-direction: column;
+                align-items: flex-start;
+            }
         }
     </style>
 </head>
 
 <body>
 
-<div class="card">
-    <h1>Expense Claim</h1>
+<header>
+    <h1>Expense Claims</h1>
+    <p>Employee Expense Management System</p>
+</header>
 
-    <form id="claimForm">
+<div class="container">
 
-        <label>Employee ID</label>
-        <input id="employeeId" type="number" value="1" required>
+    <!-- DEMO ROLE -->
+    <div class="role-bar">
+        <label for="role">Demo Role:</label>
 
-        <label>Merchant</label>
-        <input id="merchant" placeholder="TSRTC" required>
-
-        <label>Description</label>
-        <textarea id="description"
-                  placeholder="Bus ticket from Hyderabad to Secunderabad"
-                  required></textarea>
-
-        <label>Amount</label>
-        <input id="amount" type="number" step="0.01" required>
-
-        <label>Expense Date</label>
-        <input id="expenseDate" type="date" required>
-
-        <label>Category</label>
-        <select id="category">
-            <option>Travel</option>
-            <option>Food</option>
-            <option>Accommodation</option>
-            <option>Office Supplies</option>
-            <option>Other</option>
+        <select id="role" onchange="changeRole()">
+            <option value="employee">Employee — Alice (ID 1)</option>
+            <option value="manager">Manager — Bob (ID 2)</option>
+            <option value="finance">Finance — Carol (ID 3)</option>
         </select>
 
-        <label>Receipt / Ticket Photo</label>
+        <p class="small">
+            Demo role selection only. Backend role checks are still enforced.
+        </p>
+    </div>
 
-        <input
-            id="receipt"
-            type="file"
-            accept="image/*"
-            capture="environment"
-        >
 
-        <img id="preview">
+    <!-- EMPLOYEE -->
+    <section id="employeeSection">
 
-        <button type="submit">
-            Create Expense Claim
-        </button>
+        <div class="card">
+            <h2>Submit Expense Claim</h2>
 
-    </form>
+            <div class="grid">
 
-    <div id="result"></div>
+                <div class="field">
+                    <label>Employee ID</label>
+                    <input
+                        id="employeeId"
+                        type="number"
+                        value="1"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Merchant</label>
+                    <input
+                        id="merchant"
+                        placeholder="TSRTC"
+                    >
+                </div>
+
+                <div class="field full">
+                    <label>Description</label>
+                    <textarea
+                        id="description"
+                        placeholder="Bus ticket from Hyderabad to Secunderabad"
+                    ></textarea>
+                </div>
+
+                <div class="field">
+                    <label>Amount (₹)</label>
+                    <input
+                        id="amount"
+                        type="number"
+                        step="0.01"
+                        min="0"
+                        placeholder="250"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Expense Date</label>
+                    <input
+                        id="expenseDate"
+                        type="date"
+                    >
+                </div>
+
+                <div class="field">
+                    <label>Category</label>
+                    <select id="category">
+                        <option value="Travel">Travel</option>
+                        <option value="Food">Food</option>
+                        <option value="Accommodation">Accommodation</option>
+                        <option value="Office">Office</option>
+                        <option value="Other">Other</option>
+                    </select>
+                </div>
+
+                <div class="field">
+                    <label>Receipt / Ticket Photo</label>
+                    <input
+                        id="receipt"
+                        type="file"
+                        accept="image/jpeg,image/png,image/webp"
+                        capture="environment"
+                    >
+
+                    <p class="small">
+                        On a mobile phone, this can open the camera.
+                    </p>
+                </div>
+
+            </div>
+
+            <button
+                class="primary"
+                onclick="createClaim()"
+            >
+                Create Expense Claim
+            </button>
+
+            <div id="employeeMessage" class="message"></div>
+        </div>
+
+
+        <div class="card">
+            <h2>My Claims</h2>
+
+            <button
+                class="secondary"
+                onclick="loadEmployeeClaims()"
+            >
+                Refresh Claims
+            </button>
+
+            <div id="employeeClaims">
+                <p class="empty">No claims loaded.</p>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- MANAGER -->
+    <section id="managerSection" class="hidden">
+
+        <div class="card">
+            <h2>Manager Dashboard</h2>
+
+            <p>
+                Review submitted employee expense claims.
+            </p>
+
+            <button
+                class="secondary"
+                onclick="loadManagerClaims()"
+            >
+                Refresh Claims
+            </button>
+
+            <div id="managerClaims">
+                <p class="empty">No claims loaded.</p>
+            </div>
+        </div>
+
+    </section>
+
+
+    <!-- FINANCE -->
+    <section id="financeSection" class="hidden">
+
+        <div class="card">
+            <h2>Finance Dashboard</h2>
+
+            <p>
+                Process approved expense claims.
+            </p>
+
+            <button
+                class="secondary"
+                onclick="loadFinanceClaims()"
+            >
+                Refresh Claims
+            </button>
+
+            <div id="financeClaims">
+                <p class="empty">No claims loaded.</p>
+            </div>
+        </div>
+
+    </section>
+
 </div>
+
 
 <script>
 
-const API = "http://127.0.0.1:8000";
+    /*
+     * API configuration.
+     *
+     * If frontend and backend are deployed together:
+     *      window.location.origin
+     *
+     * If backend is hosted somewhere else, replace this with
+     * the backend URL.
+     */
+    const API_BASE = window.location.origin;
 
-const receiptInput = document.getElementById("receipt");
-const preview = document.getElementById("preview");
 
-receiptInput.addEventListener("change", () => {
+    // ------------------------------------------------------------
+    // Initialisation
+    // ------------------------------------------------------------
 
-    const file = receiptInput.files[0];
+    document.getElementById("expenseDate").value =
+        new Date().toISOString().split("T")[0];
 
-    if (!file) {
-        preview.style.display = "none";
-        return;
+
+    function changeRole() {
+
+        const role = document.getElementById("role").value;
+
+        document.getElementById("employeeSection")
+            .classList.toggle("hidden", role !== "employee");
+
+        document.getElementById("managerSection")
+            .classList.toggle("hidden", role !== "manager");
+
+        document.getElementById("financeSection")
+            .classList.toggle("hidden", role !== "finance");
+
+        if (role === "employee") {
+            loadEmployeeClaims();
+        }
+
+        if (role === "manager") {
+            loadManagerClaims();
+        }
+
+        if (role === "finance") {
+            loadFinanceClaims();
+        }
     }
 
-    preview.src = URL.createObjectURL(file);
-    preview.style.display = "block";
-});
+
+    // ------------------------------------------------------------
+    // Helper
+    // ------------------------------------------------------------
+
+    async function api(url, options = {}) {
+
+        const response = await fetch(API_BASE + url, options);
+
+        let data;
+
+        try {
+            data = await response.json();
+        } catch {
+            data = {};
+        }
+
+        if (!response.ok) {
+
+            let message = data.detail || "Request failed";
+
+            if (Array.isArray(message)) {
+                message = message
+                    .map(x => x.msg)
+                    .join(", ");
+            }
+
+            throw new Error(message);
+        }
+
+        return data;
+    }
 
 
-document.getElementById("claimForm").addEventListener("submit", async (event) => {
+    function showMessage(elementId, text, success = true) {
 
-    event.preventDefault();
+        const element = document.getElementById(elementId);
 
-    const result = document.getElementById("result");
+        element.textContent = text;
 
-    result.textContent = "Creating claim...";
+        element.className =
+            "message " +
+            (success
+                ? "success-message"
+                : "error-message");
+    }
 
-    try {
+
+    function statusClass(status) {
+
+        return status.toLowerCase();
+    }
+
+
+    // ------------------------------------------------------------
+    // Employee - Create Claim
+    // ------------------------------------------------------------
+
+    async function createClaim() {
 
         const employeeId =
             document.getElementById("employeeId").value;
 
-        const claimData = {
-            merchant: document.getElementById("merchant").value,
-            description: document.getElementById("description").value,
-            amount: Number(document.getElementById("amount").value),
-            expense_date: document.getElementById("expenseDate").value,
-            category: document.getElementById("category").value
-        };
+        const merchant =
+            document.getElementById("merchant").value.trim();
 
-        const response = await fetch(
-            `${API}/claims?employee_id=${employeeId}`,
-            {
-                method: "POST",
-                headers: {
-                    "Content-Type": "application/json"
-                },
-                body: JSON.stringify(claimData)
-            }
-        );
+        const description =
+            document.getElementById("description").value.trim();
 
-        if (!response.ok) {
-            throw new Error(await response.text());
+        const amount =
+            document.getElementById("amount").value;
+
+        const expenseDate =
+            document.getElementById("expenseDate").value;
+
+        const category =
+            document.getElementById("category").value;
+
+        const receipt =
+            document.getElementById("receipt").files[0];
+
+
+        if (!employeeId ||
+            !merchant ||
+            !description ||
+            !amount ||
+            !expenseDate ||
+            !category) {
+
+            showMessage(
+                "employeeMessage",
+                "Please fill all required fields.",
+                false
+            );
+
+            return;
         }
 
-        const claim = await response.json();
 
-        const file = receiptInput.files[0];
+        try {
 
-        if (file) {
-
-            result.textContent =
-                `Claim #${claim.id} created. Uploading receipt...`;
-
-            const formData = new FormData();
-
-            formData.append("file", file);
-
-            const uploadResponse = await fetch(
-                `${API}/claims/${claim.id}/receipt`,
+            const claim = await api(
+                `/claims?employee_id=${employeeId}`,
                 {
                     method: "POST",
-                    body: formData
+
+                    headers: {
+                        "Content-Type": "application/json"
+                    },
+
+                    body: JSON.stringify({
+                        merchant: merchant,
+                        description: description,
+                        amount: Number(amount),
+                        expense_date: expenseDate,
+                        category: category
+                    })
                 }
             );
 
-            if (!uploadResponse.ok) {
-                throw new Error(await uploadResponse.text());
+
+            let receiptMessage =
+                "No receipt uploaded.";
+
+            if (receipt) {
+
+                const formData = new FormData();
+
+                formData.append("file", receipt);
+
+
+                await api(
+                    `/claims/${claim.id}/receipt`,
+                    {
+                        method: "POST",
+                        body: formData
+                    }
+                );
+
+                receiptMessage =
+                    "Receipt uploaded.";
             }
+
+
+            showMessage(
+                "employeeMessage",
+                `Claim #${claim.id} created successfully. ${receiptMessage}`,
+                true
+            );
+
+
+            document.getElementById("merchant").value = "";
+            document.getElementById("description").value = "";
+            document.getElementById("amount").value = "";
+            document.getElementById("receipt").value = "";
+
+
+            loadEmployeeClaims();
+
+        } catch (error) {
+
+            showMessage(
+                "employeeMessage",
+                error.message,
+                false
+            );
+        }
+    }
+
+
+    // ------------------------------------------------------------
+    // Employee - Claims
+    // ------------------------------------------------------------
+
+    async function loadEmployeeClaims() {
+
+        const employeeId =
+            document.getElementById("employeeId").value || 1;
+
+        const container =
+            document.getElementById("employeeClaims");
+
+        try {
+
+            const claims = await api(
+                `/claims?employee_id=${employeeId}`
+            );
+
+            if (!claims.length) {
+
+                container.innerHTML =
+                    `<p class="empty">No claims found.</p>`;
+
+                return;
+            }
+
+            container.innerHTML =
+                claims.map(claim =>
+                    renderEmployeeClaim(claim)
+                ).join("");
+
+        } catch (error) {
+
+            container.innerHTML =
+                `<p class="empty">${escapeHtml(error.message)}</p>`;
+        }
+    }
+
+
+    function renderEmployeeClaim(claim) {
+
+        const canSubmit =
+            claim.status === "draft";
+
+
+        return `
+            <div class="claim">
+
+                <div class="claim-header">
+
+                    <h3>
+                        #${claim.id} — ${escapeHtml(claim.merchant)}
+                    </h3>
+
+                    <span class="status ${statusClass(claim.status)}">
+                        ${claim.status.toUpperCase()}
+                    </span>
+
+                </div>
+
+                <div class="details">
+
+                    <strong>Amount:</strong>
+                    ₹${claim.amount}
+
+                    <br>
+
+                    <strong>Category:</strong>
+                    ${escapeHtml(claim.category)}
+
+                    <br>
+
+                    <strong>Date:</strong>
+                    ${claim.expense_date}
+
+                    <br>
+
+                    <strong>Description:</strong>
+                    ${escapeHtml(claim.description)}
+
+                    <br>
+
+                    <strong>Duplicate Score:</strong>
+                    ${claim.duplicate_score}
+
+                    <br>
+
+                    <strong>Receipt:</strong>
+                    ${
+                        claim.receipt_filename
+                        ? "Uploaded"
+                        : "Not uploaded"
+                    }
+
+                </div>
+
+                <div class="actions">
+
+                    ${
+                        canSubmit
+                        ? `
+                            <button
+                                class="primary"
+                                onclick="submitClaim(${claim.id})"
+                            >
+                                Submit Claim
+                            </button>
+                        `
+                        : ""
+                    }
+
+                    ${
+                        claim.receipt_filename
+                        ? `
+                            <button
+                                class="secondary"
+                                onclick="viewReceipt(${claim.id})"
+                            >
+                                View Receipt
+                            </button>
+                        `
+                        : ""
+                    }
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    // ------------------------------------------------------------
+    // Employee - Submit
+    // ------------------------------------------------------------
+
+    async function submitClaim(claimId) {
+
+        const employeeId =
+            document.getElementById("employeeId").value || 1;
+
+        try {
+
+            await api(
+                `/claims/${claimId}/submit?employee_id=${employeeId}`,
+                {
+                    method: "POST"
+                }
+            );
+
+            showMessage(
+                "employeeMessage",
+                `Claim #${claimId} submitted successfully.`,
+                true
+            );
+
+            loadEmployeeClaims();
+
+        } catch (error) {
+
+            showMessage(
+                "employeeMessage",
+                error.message,
+                false
+            );
+        }
+    }
+
+
+    // ------------------------------------------------------------
+    // Manager
+    // ------------------------------------------------------------
+
+    async function loadManagerClaims() {
+
+        const container =
+            document.getElementById("managerClaims");
+
+        try {
+
+            const claims = await api(
+                "/claims?status=submitted"
+            );
+
+            if (!claims.length) {
+
+                container.innerHTML =
+                    `<p class="empty">
+                        No submitted claims waiting for approval.
+                    </p>`;
+
+                return;
+            }
+
+            container.innerHTML =
+                claims.map(claim =>
+                    renderManagerClaim(claim)
+                ).join("");
+
+        } catch (error) {
+
+            container.innerHTML =
+                `<p class="empty">${escapeHtml(error.message)}</p>`;
+        }
+    }
+
+
+    function renderManagerClaim(claim) {
+
+        return `
+            <div class="claim">
+
+                <div class="claim-header">
+
+                    <h3>
+                        Claim #${claim.id}
+                    </h3>
+
+                    <span class="status submitted">
+                        SUBMITTED
+                    </span>
+
+                </div>
+
+                <div class="details">
+
+                    <strong>Employee:</strong>
+                    ${claim.employee_id}
+
+                    <br>
+
+                    <strong>Merchant:</strong>
+                    ${escapeHtml(claim.merchant)}
+
+                    <br>
+
+                    <strong>Amount:</strong>
+                    ₹${claim.amount}
+
+                    <br>
+
+                    <strong>Category:</strong>
+                    ${escapeHtml(claim.category)}
+
+                    <br>
+
+                    <strong>Date:</strong>
+                    ${claim.expense_date}
+
+                    <br>
+
+                    <strong>Description:</strong>
+                    ${escapeHtml(claim.description)}
+
+                    <br>
+
+                    <strong>Duplicate Score:</strong>
+                    ${claim.duplicate_score}
+
+                    <br>
+
+                    <strong>Receipt:</strong>
+                    ${
+                        claim.receipt_filename
+                        ? "Uploaded"
+                        : "Not uploaded"
+                    }
+
+                </div>
+
+                <div class="actions">
+
+                    ${
+                        claim.receipt_filename
+                        ? `
+                            <button
+                                class="secondary"
+                                onclick="viewReceipt(${claim.id})"
+                            >
+                                View Receipt
+                            </button>
+                        `
+                        : ""
+                    }
+
+                    <button
+                        class="success"
+                        onclick="approveClaim(${claim.id})"
+                    >
+                        Approve
+                    </button>
+
+                    <button
+                        class="danger"
+                        onclick="rejectClaim(${claim.id})"
+                    >
+                        Reject
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    async function approveClaim(claimId) {
+
+        try {
+
+            await api(
+                `/claims/${claimId}/approve?manager_id=2`,
+                {
+                    method: "POST"
+                }
+            );
+
+            alert(`Claim #${claimId} approved.`);
+
+            loadManagerClaims();
+
+        } catch (error) {
+
+            alert(error.message);
+        }
+    }
+
+
+    async function rejectClaim(claimId) {
+
+        try {
+
+            await api(
+                `/claims/${claimId}/reject?manager_id=2`,
+                {
+                    method: "POST"
+                }
+            );
+
+            alert(`Claim #${claimId} rejected.`);
+
+            loadManagerClaims();
+
+        } catch (error) {
+
+            alert(error.message);
+        }
+    }
+
+
+    // ------------------------------------------------------------
+    // Finance
+    // ------------------------------------------------------------
+
+    async function loadFinanceClaims() {
+
+        const container =
+            document.getElementById("financeClaims");
+
+        try {
+
+            const claims = await api(
+                "/claims?status=approved"
+            );
+
+            if (!claims.length) {
+
+                container.innerHTML =
+                    `<p class="empty">
+                        No approved claims waiting for payment.
+                    </p>`;
+
+                return;
+            }
+
+            container.innerHTML =
+                claims.map(claim =>
+                    renderFinanceClaim(claim)
+                ).join("");
+
+        } catch (error) {
+
+            container.innerHTML =
+                `<p class="empty">${escapeHtml(error.message)}</p>`;
+        }
+    }
+
+
+    function renderFinanceClaim(claim) {
+
+        return `
+            <div class="claim">
+
+                <div class="claim-header">
+
+                    <h3>
+                        Claim #${claim.id}
+                    </h3>
+
+                    <span class="status approved">
+                        APPROVED
+                    </span>
+
+                </div>
+
+                <div class="details">
+
+                    <strong>Employee:</strong>
+                    ${claim.employee_id}
+
+                    <br>
+
+                    <strong>Merchant:</strong>
+                    ${escapeHtml(claim.merchant)}
+
+                    <br>
+
+                    <strong>Amount:</strong>
+                    ₹${claim.amount}
+
+                    <br>
+
+                    <strong>Category:</strong>
+                    ${escapeHtml(claim.category)}
+
+                    <br>
+
+                    <strong>Date:</strong>
+                    ${claim.expense_date}
+
+                </div>
+
+                <div class="actions">
+
+                    ${
+                        claim.receipt_filename
+                        ? `
+                            <button
+                                class="secondary"
+                                onclick="viewReceipt(${claim.id})"
+                            >
+                                View Receipt
+                            </button>
+                        `
+                        : ""
+                    }
+
+                    <button
+                        class="success"
+                        onclick="payClaim(${claim.id})"
+                    >
+                        Mark as Paid
+                    </button>
+
+                </div>
+
+            </div>
+        `;
+    }
+
+
+    async function payClaim(claimId) {
+
+        try {
+
+            await api(
+                `/claims/${claimId}/pay?finance_id=3`,
+                {
+                    method: "POST"
+                }
+            );
+
+            alert(`Claim #${claimId} marked as paid.`);
+
+            loadFinanceClaims();
+
+        } catch (error) {
+
+            alert(error.message);
+        }
+    }
+
+
+    // ------------------------------------------------------------
+    // Receipt
+    // ------------------------------------------------------------
+
+    function viewReceipt(claimId) {
+
+        window.open(
+            `${API_BASE}/claims/${claimId}/receipt`,
+            "_blank"
+        );
+    }
+
+
+    // ------------------------------------------------------------
+    // Security helper
+    // ------------------------------------------------------------
+
+    function escapeHtml(value) {
+
+        if (value === null || value === undefined) {
+            return "";
         }
 
-        result.textContent =
-            `Claim #${claim.id} created successfully.\n\n` +
-            `Status: ${claim.status}\n` +
-            `Amount: ₹${claim.amount}\n` +
-            `Receipt: ${file ? "Uploaded" : "Not uploaded"}\n\n` +
-            `You can now submit the claim through the API.`;
-
-    } catch (error) {
-
-        result.textContent =
-            "Error: " + error.message;
+        return String(value)
+            .replaceAll("&", "&amp;")
+            .replaceAll("<", "&lt;")
+            .replaceAll(">", "&gt;")
+            .replaceAll('"', "&quot;")
+            .replaceAll("'", "&#039;");
     }
-});
+
+
+    // Load employee claims initially
+    loadEmployeeClaims();
 
 </script>
 

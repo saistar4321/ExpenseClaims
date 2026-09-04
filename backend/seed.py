@@ -13,13 +13,7 @@ def seed():
         db.close()
         return
 
-    employee = User(
-        name="Alice Employee",
-        email="alice@example.com",
-        role=UserRole.STAFF,
-        monthly_limit=30000,
-    )
-
+    # Create manager first so the employee can reference the manager.
     manager = User(
         name="Bob Manager",
         email="bob@example.com",
@@ -34,12 +28,20 @@ def seed():
         monthly_limit=100000,
     )
 
-    db.add_all([
-        employee,
-        manager,
-        finance,
-    ])
+    db.add(manager)
+    db.add(finance)
+    db.commit()
 
+    # Employee is assigned to Bob Manager.
+    employee = User(
+        name="Alice Employee",
+        email="alice@example.com",
+        role=UserRole.STAFF,
+        manager_id=manager.id,
+        monthly_limit=30000,
+    )
+
+    db.add(employee)
     db.commit()
 
     print("Seeded demo users:")
